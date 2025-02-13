@@ -23,5 +23,5 @@ To compile and run this game, you need:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/rogue-like-ascii-rpg.git
-   cd rogue-like-ascii-rpg
+   git clone https://github.com/fkaan/rogue_rpg
+   cd rogue_rpg
