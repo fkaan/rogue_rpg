@@ -1,6 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ncurses.h>
+typedef struct Room
+{
+    int xPosition;
+    int yPosition;
+    int height;
+    int width;
+    //Monter ** monsters;
+    //Item ** items;
+
+}Room;
 typedef struct Player
 {
     int xPosition;
@@ -10,13 +20,15 @@ typedef struct Player
 }Player;
 
 Player * player_SetUp();
+Room ** mapSetUp();
 
 int screenSetUp();
-int mapSetUp();
 int handleInput(int input, Player * user);
 int playerMove(int y, int x, Player * user);
+int check_Position(int newY, int newX, Player * user);
 
-
+/* room func */
+Room * createRoom(int x, int y, int height, int width);
 
 int main()
 {
@@ -50,14 +62,19 @@ int screenSetUp()
     return 0;
 }
 
-int mapSetUp()
+Room ** mapSetUp()
 {
+    Room ** rooms;
+    rooms = malloc(sizeof(Room)*6);
+
     mvprintw(13, 13, "--------");
     mvprintw(14, 13, "|******|");
     mvprintw(15, 13, "|******|");
     mvprintw(16, 13, "|******|");
     mvprintw(17, 13, "|******|");
     mvprintw(18, 13, "--------");
+
+    rooms[0] = createRoom(13, 13, 6, 8);
 
     mvprintw(2, 40, "--------");
     mvprintw(3, 40, "|******|");
@@ -73,6 +90,14 @@ int mapSetUp()
     mvprintw(13, 40, "|**********|");
     mvprintw(14, 40, "|**********|");
     mvprintw(15, 40, "------------");
+}
+
+Room * createRoom(int x, int y, int height, int width)
+{
+    Room * newRoom;
+    newRoom = malloc(sizeof(Room));
+    //still trying to work it
+    newRoom -> xPos
 }
 
 Player * player_SetUp()
@@ -91,42 +116,71 @@ Player * player_SetUp()
 
 int handleInput(int input, Player  * user)
 {
+    int newY;
+    int newX;
     switch(input)
     {
         /*move up*/
         case 'w':
         case 'W':
-            playerMove(user->yPosition-1, user->xPosition, user);
+            newY = user->yPosition - 1;
+            newX = user->xPosition;
+            //playerMove(user->yPosition-1, user->xPosition, user);
             break;
         /*move down*/
         case 's':
         case 'S':
-            playerMove(user->yPosition+1, user->xPosition, user);
+            newY = user->yPosition + 1;
+            newX = user->xPosition;
+            //playerMove(user->yPosition+1, user->xPosition, user);
             break;
         /*move left*/
         case 'a':
         case 'A':
-            playerMove(user->yPosition, user->xPosition-1, user);
+            newY = user->yPosition;
+            newX = user->xPosition - 1;
+            //playerMove(user->yPosition, user->xPosition-1, user);
             break;
         /*move right*/
         case 'd':
         case 'D':
-            playerMove(user->yPosition, user->xPosition+1, user);
+            newY = user->yPosition;
+            newX = user->xPosition + 1;
+            //playerMove(user->yPosition, user->xPosition+1, user);
             break;
 
         default:
             break;
     }
+    check_Position(newY, newX, user);
 }
+
+/* check what is at next position */
+int check_Position(int newY, int newX, Player * user)
+{
+    int space;
+    switch(mvinch(newY, newX))
+    {
+        case '*':
+            playerMove(newY, newX, user);
+            break;
+        default:
+            break;
+    }
+
+
+
+}
+
 
 int playerMove(int y, int x, Player * user)
 {
 
-    mvprintw(user->yPosition, user->xPosition, ".");
+    mvprintw(user->yPosition, user->xPosition, "*");
     //move(newPlayer->yPosition,newPlayer->xPosition);
     user->yPosition = y;
     user->xPosition = x;
-    mvprintw(user->yPosition, user->xPosition, ".");
+    mvprintw(user->yPosition, user->xPosition, "@");
     move(user->yPosition, user->xPosition);
 
 }
